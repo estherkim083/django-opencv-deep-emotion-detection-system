@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+    {% include "navbar.html" %}
+    {% load myapp_filter %}
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="wrapper wrapper-content animated fadeInRight">
+                    <div class="ibox-content forum-container">
+                        <div class="forum-item">
+                            <div class="row">
+                                <div class="forum-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-share" viewBox="0 0 16 16">
+                                        <path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.499 2.499 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5zm-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>
+                                    </svg>
+                                </div>
+                                <div class="col-md-2 forum-info">
+                                    <a class="forum-item-title">No.</a>
+                                </div>
+                                <div class="col-md-4 forum-info">
+                                    <a class="forum-item-title">날짜 시간</a>
+                                </div>
+                                <div class="col-md-4 forum-info">
+                                    <a class="forum-item-title">동영상/사진 링크</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% if record_data_list %}
+                        {% for record in record_data_list %}
+                        <div class="forum-item">
+                            <div class="row">
+                                <div class="forum-icon">
+                                    <a href="{% url 'myapp:share-commit' record.video %}"><img src="../../static/images/send.png"
+                                         style="width: 30px; min-width: 30px;"></a>
+                                </div>
+                                <div class="col-md-2 forum-info">
+                                    <a class="forum-item-title">
+                                        {{ record_data_list.paginator.count|sub:record_data_list.start_index|sub:forloop.counter0|add:1 }}
+                                    </a>
+                                </div>
+                                <div class="col-md-4 forum-info">
+                                    <a class="forum-item-title-date">{{ record.create_date }}</a>
+                                </div>
+                                <div class="col-md-4 forum-info">
+                                    <a class="forum-item-title-link" id="img_link" href="{% url 'myapp:video' record.video %}">{{record.video}}</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 페이징처리 시작 -->
+        <div style=" text-align: center;">
+            <ul class="pagination justify-content-center">
+                <!-- 이전페이지 -->
+                {% if record_data_list.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" data-page="{{ record_data_list.previous_page_number }}" href="#">이전</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+                </li>
+                {% endif %}
+                <!-- 페이지리스트 -->
+                {% for page_number in record_data_list.paginator.page_range %}
+                {% if page_number >= record_data_list.number|add:-5 and page_number <= record_data_list.number|add:5 %}
+                {% if page_number == record_data_list.number %}
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a class="page-link" data-page="{{ page_number }}" href="#">{{ page_number }}</a>
+                </li>
+                {% endif %}
+                {% endif %}
+                {% endfor %}
+                <!-- 다음페이지 -->
+                {% if record_data_list.has_next %}
+                <li class="page-item">
+                    <a class="page-link" data-page="{{ record_data_list.next_page_number }}" href="#">다음</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" tabindex="-1" aria-disabled="true" href="#">다음</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+        <!-- 페이징처리 끝 -->
+
+        <div style=" text-align: center;">
+            <a class="btn btn-primary mb-3" href="{% url 'myapp:statistics' %}" role="button">통계 보기&동기화</a>
+        </div>
+    </div>
+
+    <form id="searchForm" method="get" action="{% url 'myapp:record' %}">
+        <input type="hidden" id="page" name="page" value="{{ page }}">
+    </form>
+
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="{% static 'bootstrap.js' %}"></script>
+
+    <script type='text/javascript'>
+        $(document).ready(function(){
+            $(".page-link").on('click', function() {
+                $("#page").val($(this).data("page"));
+                $("#searchForm").submit();
+            });
+        });
+    </script>
+</body>
+</html>

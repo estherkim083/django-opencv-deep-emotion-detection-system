@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="container">
+        <div class="jumbotron">
+            <div class="container">
+                <h1 style="font-size: 200%; font-weight: bold">당신의 Emotion 웹사이트 소개</h1>
+                <p>Heart Emotion 웹사이트는 딥러닝 웹사이트 입니다. Photozone에서 사진/동영상을 찍으면 기록에서
+                    확인가능합니다. 게시판에서 가족과 친구들과 공유하세요.</p>
+                <p>
+                    <a class="btn btn-primary btn-pull" href="{% url 'myapp:photozone' %}" role="button">포토존 가기</a>
+                    <a class="btn btn-primary btn-pull" href="{% url 'myapp:dnn-photozone' %}" role="button">dnn ver. 포토존 가기</a>
+                    <a class="btn btn-primary btn-pull" href="{% url 'myapp:mtcnn-photozone' %}" role="button">mtcnn ver. 포토존 가기</a>
+                    <a class="btn btn-primary btn-pull" href="{% url 'myapp:training' %}" role="button">(CNN)딥러닝 학습시키기 버튼</a>
+                </p>
+            </div>
+        </div>
+        <div>
+            <br>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:vgg-training' %}" role="button">(VGG)딥러닝 학습시키기 버튼</a>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:vgg-photozone' %}" role="button">(VGG)포토존 가기</a>
+        </div>
+        <div>
+            <br>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:efficientnet-training' %}" role="button">(Efficientnet)딥러닝 학습시키기 버튼</a>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:efficientnet-train-again' %}" role="button">(Efficientnet)학습 이어시</a>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:efficientnet-photozone' %}" role="button">(Efficientnet)포토존 가기</a>
+        </div>
+        <div>
+            <br>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:mobilenet-training' %}" role="button">(Mobilenet)딥러닝 학습시키기 버튼</a>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:mobilenet-train-again' %}" role="button">(Mobilenet)학습 이어서</a>
+            <a class="btn btn-primary btn-pull" href="{% url 'myapp:mobilenet-photozone' %}" role="button">(Mobilenet)포토존 가기</a>
+        </div>
+
+    </div>
+    {% load static %}
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="{% static 'bootstrap.js' %}"></script>
+    {% if alert_flag %}
+        <script>alert("Training was successful.")</script>
+    {% endif %}
+</body>
+</html>

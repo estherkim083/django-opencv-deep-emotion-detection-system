@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="container">
+    <div class="row">
+        <table class="table table-striped" style="text-align: center; border:
+						1px solid #dddddd">
+            <thead>
+            <tr>
+                <th colspan="3" style="background-color:#eeeeee; text-align:center;">공유된 글보기</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td style="width:20%;">글제목</td>
+                <td colspan="2">{{share_emotion.subject}}</td>
+            </tr>
+            <tr>
+                <td>작성자</td>
+                <td colspan="2">{{share_emotion.author}}</td>
+            </tr>
+            <tr>
+                <td>작성일자</td>
+                <td colspan="2">{{share_emotion.create_date}}</td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td colspan="2" style="min-height:200px; text-align:left;">{{share_emotion.content}}</td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="{% url 'myapp:share-record'%}" class="btn btn-primary">목록</a>
+        {% if user == share_emotion.author %}
+        <a href="" class="btn btn-primary">수정</a>
+        <a onclick="return confirm('정말 삭제하시겠습니까?')" href="" class="btn btn-primary">삭제</a>
+        {% endif %}
+    </div>
+    <br/>
+    <br/>
+    <div style="width:50%;margin-left: auto;margin-right: auto;display: block;">
+        <figure class="highcharts-figure">
+            <div id="container"></div>
+            <p class="highcharts-description">
+                In this pie chart, you could see your emotional data percentage of
+                your individual video.
+            </p>
+        </figure>
+    </div>
+</div>
+
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'bootstrap.js' %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script>
+    // Create the chart
+
+    var x = "{{share_emotion_percentage}}";
+    var xx= x.split(",");
+    var xx_list=[]
+    xx[0]= xx[0].replace("[","")
+    xx_list.push(parseFloat(xx[0]));
+    for(var i=1;i<xx.length-1;i++) {
+        xx_list.push(parseFloat(xx[i]));
+    }
+    xx[xx.length-1]= xx[xx.length-1].replace("]","");
+    xx_list.push(parseFloat(xx[xx.length-1]));
+
+    console.log(typeof(xx_list[0]));
+
+    Highcharts.chart('container', {
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Your Emotional Data Percentage.'
+        },
+
+        accessibility: {
+            announceNewData: {
+                enabled: true
+            },
+            point: {
+                valueSuffix: '%'
+            }
+        },
+
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y:.1f}%'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+        },
+
+        series: [
+            {
+                name: "Browsers",
+                colorByPoint: true,
+                data: [
+                    {
+                        name: "Angry",
+                        y: xx_list[0],
+                        drilldown: "Angry"
+                    },
+                    {
+                        name: "Disgusted",
+                        y: xx_list[1],
+                        drilldown: "Disgusted"
+                    },
+                    {
+                        name: "Fearful",
+                        y: xx_list[2],
+                        drilldown: "Fearful"
+                    },
+                    {
+                        name: "Happy",
+                        y: xx_list[3],
+                        drilldown: "Happy"
+                    },
+                    {
+                        name: "Neutral",
+                        y: xx_list[4],
+                        drilldown: "Neutral"
+                    },
+                    {
+                        name: "Sad",
+                        y: xx_list[5],
+                        drilldown: "Sad"
+                    },
+                    {
+                        name: "Surprised",
+                        y: xx_list[6],
+                        drilldown: "Surprised"
+                    }
+                ]
+            }
+        ]
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'highchart.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+{% include "navbar.html" %}
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+    <p class="highcharts-description">
+        날짜에 따라 opencv 에서 캡처된 당신의 감정 퍼센티지 그래프 입니다.
+        감정 퍼센터지의 소숫점은 제외시켰습니다.
+    </p>
+</figure>
+
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'bootstrap.js' %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script type="text/javascript">
+
+    var x = "{{graph_data_x}}";
+    var y = "{{graph_data_y}}";
+
+    var xx = x.split(";");
+    var xx_list = [];
+    for (var i = 0; i < xx.length; i++) {
+        if (i % 2 != 0) {
+            var yy = xx[i].split("_");
+            xx[i] = xx[i].replace("_" + yy[6], "");
+            xx_list.push(xx[i]);
+        }
+    }
+
+    var yy = y.split("[");
+    var yy_list = [];
+    for (var i = 2; i < yy.length; i++) {
+        var zz = yy[i].split("],");
+        if (i == (yy.length - 1)) {
+            var zz_0 = zz[0].split("]]");
+            yy_list.push(zz_0[0]);
+        } else {
+            yy_list.push(zz[0]);
+        }
+    }
+    // console.log(typeof(yy_list));
+    console.log(yy_list[0]);
+    var angry_list = [];
+    var disgused_list = [];
+    var fearful_list = [];
+    var happy_list = [];
+    var neutral_list = [];
+    var sad_list = [];
+    var surprised_list = [];
+    for (var i = 0; i < yy_list.length; i++) {
+        // console.log(yy_list[i]);
+        var aaa = yy_list[i].split(",");
+        // console.log(aaa);
+        angry_list.push(aaa[0]);
+        disgused_list.push(aaa[1]);
+        fearful_list.push(aaa[2]);
+        happy_list.push(aaa[3]);
+        neutral_list.push(aaa[4]);
+        sad_list.push(aaa[5]);
+        surprised_list.push(aaa[6]);
+    }
+
+    var angry_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        angry_percentage_data.push(Math.trunc(angry_list[i]));
+    }
+
+    var disgusted_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        disgusted_percentage_data.push(Math.trunc(disgused_list[i]));
+    }
+
+    var fearful_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        fearful_percentage_data.push(Math.trunc(fearful_list[i]));
+    }
+
+    var happy_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        happy_percentage_data.push(Math.trunc(happy_list[i]));
+    }
+
+    var neutral_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        neutral_percentage_data.push(Math.trunc(neutral_list[i]));
+    }
+
+    var sad_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        sad_percentage_data.push(Math.trunc(sad_list[i]));
+    }
+
+    var surprised_percentage_data = [];
+    for (var i = 0; i < xx_list.length; i++) {
+        surprised_percentage_data.push(Math.trunc(surprised_list[i]));
+    }
+
+
+    Highcharts.chart('container', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Emotion Percentage by Every Date'
+        },
+        subtitle: {
+            text: 'Source: 당신의 Emotion Website'
+        },
+        xAxis: {
+            categories: xx_list,
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: 'Emotion Percentage'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Angry',
+            data: angry_percentage_data
+
+        }, {
+            name: 'Disgusted',
+            data: disgusted_percentage_data
+
+        }, {
+            name: 'Fearful',
+            data: fearful_percentage_data
+
+        }, {
+            name: 'Happy',
+            data: happy_percentage_data
+
+        },
+        {
+            name: 'Neutral',
+            data: neutral_percentage_data
+
+        },{
+            name: 'Sad',
+            data: sad_percentage_data
+
+        },{
+            name: 'Surprised',
+            data: surprised_percentage_data
+
+        }]
+    });
+
+</script>
+</body>
+</html>

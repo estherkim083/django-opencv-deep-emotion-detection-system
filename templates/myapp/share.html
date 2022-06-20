@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+{% include "navbar.html" %}
+<div class="container">
+    <div class="row">
+        <form method="post" action="">
+            {% csrf_token %}
+            <table class="table table-striped" style="text-align: center; border:
+							1px solid #dddddd">
+                <thead>
+                <tr>
+                    <th colspan="2" style="background-color:#eeeeee; text-align:center;">공유하세요!</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td><input type="text" class="form-control" placeholder="글제목" name="subject" id="subject"
+                              maxlength="50"></td>
+                </tr>
+                <tr>
+                    <td><textarea class="form-control" placeholder="글내용" name="content" id="content" maxlength="2048" style="height:350px;">
+
+                    </textarea></td>
+                </tr>
+                </tbody>
+            </table>
+            <input type="submit" class="btn btn-primary pull-right" value="공유완료">
+        </form>
+    </div>
+</div>
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'bootstrap.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width", initial-scale="1">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'highchart2.css' %}">
+    <title>당신의 Emotion 웹사이트</title>
+</head>
+<body>
+    {% include "navbar.html" %}
+    <div class="container">
+        <div style="float:left;">
+            {% if video %}
+            <video width="530" height="440" controls autoplay>
+                {% load static %}
+                <source src="{% static video %}" type="video/mp4">
+            </video>
+        </div>
+        {% endif %}
+        <div style="float:right;">
+            <figure class="highcharts-figure">
+                <div id="container"></div>
+                <p class="highcharts-description">
+                    In this pie chart, you could see your emotional data percentage of
+                    your individual video.
+                </p>
+            </figure>
+        </div>
+    </div>
+{% load static %}
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="{% static 'bootstrap.js' %}"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/data.js"></script>
+<script src="https://code.highcharts.com/modules/drilldown.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/accessibility.js"></script>
+<script>
+    // Create the chart
+
+    var x = "{{percentage}}";
+    var xx= x.split(",");
+    var xx_list=[]
+    xx[0]= xx[0].replace("[","")
+    xx_list.push(parseFloat(xx[0]));
+    for(var i=1;i<xx.length-1;i++) {
+        xx_list.push(parseFloat(xx[i]));
+    }
+    xx[xx.length-1]= xx[xx.length-1].replace("]","");
+    xx_list.push(parseFloat(xx[xx.length-1]));
+
+    console.log(typeof(xx_list[0]));
+
+    Highcharts.chart('container', {
+        chart: {
+            type: 'pie'
+        },
+        title: {
+            text: 'Your Emotional Data Percentage.'
+        },
+
+        accessibility: {
+            announceNewData: {
+                enabled: true
+            },
+            point: {
+                valueSuffix: '%'
+            }
+        },
+
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y:.1f}%'
+                }
+            }
+        },
+
+        tooltip: {
+            headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+            pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f}%</b> of total<br/>'
+        },
+
+        series: [
+            {
+                name: "Browsers",
+                colorByPoint: true,
+                data: [
+                    {
+                        name: "Angry",
+                        y: xx_list[0],
+                        drilldown: "Angry"
+                    },
+                    {
+                        name: "Disgusted",
+                        y: xx_list[1],
+                        drilldown: "Disgusted"
+                    },
+                    {
+                        name: "Fearful",
+                        y: xx_list[2],
+                        drilldown: "Fearful"
+                    },
+                    {
+                        name: "Happy",
+                        y: xx_list[3],
+                        drilldown: "Happy"
+                    },
+                    {
+                        name: "Neutral",
+                        y: xx_list[4],
+                        drilldown: "Neutral"
+                    },
+                    {
+                        name: "Sad",
+                        y: xx_list[5],
+                        drilldown: "Sad"
+                    },
+                    {
+                        name: "Surprised",
+                        y: xx_list[6],
+                        drilldown: "Surprised"
+                    }
+                ]
+            }
+        ]
+    });
+</script>
+</body>
+</html>
